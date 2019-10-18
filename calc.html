@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/calc.css">
+        <title></title>
+    </head>
+    <body>
+        <div class="calc-panel">
+            <div id="calc-result" class="calc-result">&nbsp;</div>
+            <div id="calc-output" class="calc-output">0</div>
+            <div class="calc-grid">
+                <button class="calc-button" onclick="calc_operator('(')">(</button>
+                <button class="calc-button" onclick="calc_operator(')')">)</button>
+                <button class="calc-button calc-danger" onclick="calc_clear()">Clr</button>
+                <button class="calc-button calc-danger" onclick="calc_backspace()">&lArr;</button>
+                <button class="calc-button" onclick="calc_operator('+')">+</button>
+                <button class="calc-button" onclick="calc_operator('-')">-</button>
+                <button class="calc-button" onclick="calc_operator('*')">&times;</button>
+                <button class="calc-button" onclick="calc_operator('/')">&divide;</button>
+                <button class="calc-button calc-num" onclick="calc_concat(7)">7</button>
+                <button class="calc-button calc-num" onclick="calc_concat(8)">8</button>
+                <button class="calc-button calc-num" onclick="calc_concat(9)">9</button>
+                <button class="calc-button" onclick="calc_operator('^')">x<sup>y</sup></button>
+                <button class="calc-button calc-num" onclick="calc_concat(4)">4</button>
+                <button class="calc-button calc-num" onclick="calc_concat(5)">5</button>
+                <button class="calc-button calc-num" onclick="calc_concat(6)">6</button>
+                <button class="calc-button" onclick="calc_operator('%')">mod</button>
+                <button class="calc-button calc-num" onclick="calc_concat(1)">1</button>
+                <button class="calc-button calc-num" onclick="calc_concat(2)">2</button>
+                <button class="calc-button calc-num" onclick="calc_concat(3)">3</button>
+                <button class="calc-button calc-go calc-button-double-height" onclick="calc_eval()">=</button>
+                <button class="calc-button calc-num calc-button-double-width" onclick="calc_concat(0)">0</button>
+                <button class="calc-button" onclick="calc_concat('.')">.</button>
+            </div>
+        </div>
+
+        <script src="js/evaluator.js"></script>
+        <script src="js/calc.js"></script>
+
+    </body>
+</html>
