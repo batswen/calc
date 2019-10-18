@@ -1,4 +1,5 @@
 var output = document.getElementById("calc-output")
+var result = document.getElementById("calc-result")
 var input = "", parens = 0, error = false
 
 function calc_show() {
@@ -7,6 +8,7 @@ function calc_show() {
 
 function calc_clear() {
     output.innerHTML = "0"
+    result.innerHTML = "0"
     input = ""
     error = false
     calc_show()
@@ -80,7 +82,7 @@ function calc_eval() {
     if (input.length > 0) {
         var l = new Lexer(input)
         var i = new Interpreter(l)
-        document.getElementById("calc-result").innerHTML = i.expr()
+        result.innerHTML = i.expr()
     }
     calc_clear()
 }
