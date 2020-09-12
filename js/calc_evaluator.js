@@ -5,8 +5,8 @@
     Translated from Python source
 */
 
-const EOF = 0, NUMBER = 1, PLUS = 2, MINUS = 3, MUL = 4, DIV = 4, LPAREN = 5, RPAREN = 6,
-    EXP = 7, SQRT = 8, MOD = 9
+const EOF = 0, NUMBER = 1, PLUS = 2, MINUS = 3, MUL = 4, DIV = 5, LPAREN = 10, RPAREN = 11,
+    EXP = 20, SQRT = 21, MOD = 22
 
 class Lexer {
     constructor(source) {
@@ -26,12 +26,12 @@ class Lexer {
         }
     }
     getNumber() {
-        var result = ""
+        let result = ""
         while (this.chr != undefined && this.chr >= "0" && this.chr <= "9") {
             result += this.chr
             this.getNextChar()
         }
-        if (this.chr != undefined && this.chr == ".") {
+        if (this.chr != undefined && this.chr === ".") {
             result += "."
             this.getNextChar()
             while (this.chr != undefined && this.chr >= "0" && this.chr <= "9") {
@@ -39,46 +39,46 @@ class Lexer {
                 this.getNextChar()
             }
         }
-        return result
+        return Number(result)
     }
     getNextToken() {
         while (this.chr != undefined) {
-            if (this.chr >= "0" && this.chr <= "9" || this.chr == ".") {
+            if (this.chr >= "0" && this.chr <= "9" || this.chr === ".") {
                 return { type: NUMBER, value: this.getNumber() }
             }
-            if (this.chr == "+") {
+            if (this.chr === "+") {
                 this.getNextChar()
                 return { type: PLUS, value: "+" }
             }
-            if (this.chr == "-") {
+            if (this.chr === "-") {
                 this.getNextChar()
                 return { type: MINUS, value: "-" }
             }
-            if (this.chr == "*") {
+            if (this.chr === "*") {
                 this.getNextChar()
                 return { type: MUL, value: "*" }
             }
-            if (this.chr == "/") {
+            if (this.chr === "/") {
                 this.getNextChar()
                 return { type: DIV, value: "/" }
             }
-            if (this.chr == "(") {
+            if (this.chr === "(") {
                 this.getNextChar()
                 return { type: LPAREN, value: "(" }
             }
-            if (this.chr == ")") {
+            if (this.chr === ")") {
                 this.getNextChar()
                 return { type: RPAREN, value: ")" }
             }
-            if (this.chr == "^") {
+            if (this.chr === "^") {
                 this.getNextChar()
                 return { type: EXP, value: "^" }
             }
-            if (this.chr == "@") {
+            if (this.chr === "@") {
                 this.getNextChar()
                 return { type: SQRT, value: "Sqrt" }
             }
-            if (this.chr == "%") {
+            if (this.chr === "%") {
                 this.getNextChar()
                 return { type: MOD, value: "%" }
             }
@@ -97,7 +97,7 @@ class Interpreter {
         alert("Interpreter > error: "+msg)
     }
     eat(tokentype) {
-        if (this.token.type == tokentype) {
+        if (this.token.type === tokentype) {
             this.token = this.lexer.getNextToken()
         } else {
             this.error("Wrong tokentype (expected: "+tokentype+", found: "+this.token.type+")")
@@ -107,33 +107,31 @@ class Interpreter {
     * number | ( expr )
     */
     factor() {
-        var token = this.token, result
-        if (token.type == NUMBER) {
+        let token = this.token, result
+        if (token.type === NUMBER) {
             this.eat(NUMBER)
             result = token.value
-
-            return result
-        } else if (token.type == LPAREN) {
+        } else if (token.type === LPAREN) {
             this.eat(LPAREN)
             result = this.expr()
             this.eat(RPAREN)
-            return result
         }
+        return result
     }
     /**
     ** factor (*|/|^|%) factor
     */
     term() {
-        var result = this.factor()
-        while (this.token.type == MUL || this.token.type == DIV ||
-            this.token.type == EXP || this.token.type == MOD) {
-            if (this.token.type == MUL) {
+        let result = this.factor()
+        while (this.token.type === MUL || this.token.type === DIV ||
+            this.token.type === EXP || this.token.type === MOD) {
+            if (this.token.type === MUL) {
                 this.eat(MUL)
                 result *= this.factor()
-            } else if (this.token.type == DIV) {
+            } else if (this.token.type === DIV) {
                 this.eat(DIV)
                 result /= this.factor()
-            } else if (this.token.type == EXP) {
+            } else if (this.token.type === EXP) {
                 this.eat(EXP)
                 result = Math.pow(result, this.factor())
             } else {
@@ -147,11 +145,11 @@ class Interpreter {
      ** term (+|-) term
      **/
     expr() {
-        var result = this.term()
-        while (this.token.type == PLUS || this.token.type == MINUS) {
-            if (this.token.type == PLUS) {
+        let result = this.term()
+        while (this.token.type === PLUS || this.token.type === MINUS) {
+            if (this.token.type === PLUS) {
                 this.eat(PLUS)
-                result = Number(result) + Number(this.term()) // ... javascript
+                result = result + this.term()
             } else {
                 this.eat(MINUS)
                 result -= this.term()

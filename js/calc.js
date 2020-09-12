@@ -1,90 +1,109 @@
-var output = document.getElementById("calc-output")
-var result = document.getElementById("calc-result")
-var input = "", parens = 0, error = false
+let output = document.getElementById("calc-output")
+let result = document.getElementById("calc-result")
+let input = "", parens = 0, error = false, operator = ""
 
 function calc_show() {
     console.log(input)
 }
 
-function calc_clear() {
+function calc_clear(clearResult) {
     output.innerHTML = "0"
-    result.innerHTML = "0"
+    if (clearResult) {
+        result.innerHTML = "0"
+    }
     input = ""
     error = false
-    calc_show()
+    //calc_show()
 }
 
-
- function calc_error() {
-     error = true
-     output.innerHTML = "Error"
- }
+function calc_error() {
+    error = true
+    output.innerHTML = "Error"
+}
 
 function calc_concat(e) {
-    var num = Number(output.innerHTML)
+    let num = Number(output.innerHTML)
     if (error) {
         return
     }
+    if (operator !== "") {
+        input += operator
+        operator = ""
+    }
     // Allow only one dot
-    if (e == "." && output.innerHTML.indexOf(".") != -1) {
+    if (e === "." && output.innerHTML.indexOf(".") !== -1) {
         calc_error()
     }
     // Add new element to output
     output.innerHTML = output.innerHTML + e
     input += e
     // Remove leading zeros
-    while (output.innerHTML.charAt(0) == "0" && output.innerHTML.charAt(1) != ".") {
+    while (output.innerHTML.charAt(0) === "0" && output.innerHTML.charAt(1) !== ".") {
         output.innerHTML = output.innerHTML.slice(1)
     }
-    if (output.innerHTML == "") {
+    if (output.innerHTML === "") {
         output.innerHTML = "0"
     }
-    calc_show()
+    //calc_show()
 }
 
 function calc_backspace() {
     if (error) {
         return
     }
-    output.innerHTML = output.innerHTML.slice(0, -1)
-    input = input.slice(0, -1)
-    if (output.innerHTML == "") {
-        output.innerHTML = "0"
+    if (operator === "") {
+        output.innerHTML = output.innerHTML.slice(0, -1)
+        input = input.slice(0, -1)
+        if (output.innerHTML === "") {
+            output.innerHTML = "0"
+        }
+    } else {
+        operator = operator.slice(0, -1)
     }
-    calc_show()
+    //calc_show()
 }
 
-function calc_operator(operator) {
+function calc_operator(op) {
     if (error) {
         return
     }
-    if (operator == "(") {
+    if (input === "") {
+        if (result.innerHTML !== "") {
+            input = result.innerHTML
+        } else {
+            error = true
+            return
+        }
+    }
+    if (op === "(") {
         parens++
-        input += "("
-    } else if (operator == ")") {
-        if (parens == 0) {
+        operator += "("
+    } else if (op === ")") {
+        if (parens === 0) {
             return calc_error()
         }
         parens--
-        input += ")"
+        operator += ")"
     } else {
-        input += operator
+        operator += op
     }
     output.innerHTML = "0"
-    calc_show()
+    //calc_show()
 }
 
 function calc_eval() {
     if (error) {
         return
     }
-    calc_show()
+    if (operator !== "") {
+        input += operator
+        operator = ""
+    }
+    //calc_show()
     if (input.length > 0) {
-        var l = new Lexer(input)
-        var i = new Interpreter(l)
+        let l = new Lexer(input)
+        let i = new Interpreter(l)
         result.innerHTML = i.expr()
     }
-    calc_clear()
+    calc_clear(false)
 }
-
-calc_show()
